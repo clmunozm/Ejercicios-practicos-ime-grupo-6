@@ -21,13 +21,9 @@ library (car)
 # Importación de datos
 datos <- MASS::anorexia
 datos <- datos[, c("Treat", "Prewt")] 
-
-
-
-
-
 datos[["Treat"]] <- factor(datos[["Treat"]])
 datos[["instancia"]] <- factor(1:nrow(datos))
+
 
 # Se Establece un nivel de significación
 alfa <- 0.025
@@ -61,7 +57,7 @@ print(g)
 #   normal, la cual se puede observar por medio del gráfico Q-Q, se debe tener en cuenta
 #   que existen algunos valores que pueden ser atípicos, además se tiene que las muestras 
 #   son relativamente pequeñas, por lo que se utiliza un nivel de significación 
-#   más exigente alfa = 0,025.
+#   más exigente igual a alfa = 0,025.
 # - Las muestras tienen varianzas aproximadamente iguales, se comprueba al proceder
 #   con la función leveneTest() la cual realiza la prueba de homocedasticidad.
 #   Además, al realizar el procedimiento de ANOVA con ezANOVA(), esta incluye
@@ -76,7 +72,7 @@ leveneTest(y = datos$Prewt, group = datos$Treat, center = "median")
 # HA: Al menos una de las muestras tiene varianza diferente a alguna de las demás.
 
 # Al ser realizada la prueba de Levene para la homogeneidad de Varianzas, se obtiene
-# un p= 0.3969, mucho mayor al nivel de significancia por lo que se puede concluir
+# un p= 0.3969, mucho mayor al nivel de significación por lo que se puede concluir
 # con un 97,5% de confianza que las varianzas de las muestras son iguales.
 
 
@@ -109,6 +105,26 @@ print(g2)
 
 # Conclusión de prueba ANOVA:
 # Con respecto al resultado obtenido y al obtener un p = 0.552, muy superior al
-# nivel de significancia, se falla al rechazar la hipotesis nula, por lo tanto,
+# nivel de significación, se falla al rechazar la hipótesis nula, por lo tanto,
 # se concluye con un 97,5% de confianza que no existen diferencias significativas 
 # en el peso inicial de las mujeres para cada tratamiento.
+
+
+# Se aplica un análisis post hoc  sin importar el resultado de la prueba ómnibus.
+# Prueba HSD de Tukey.
+# Se utiliza esta prueba para buscar las diferencias significativas entre los
+# diferentes pares de medias.
+post_hoc <- TukeyHSD(prueba,
+                     "Treat",
+                     ordered = TRUE,
+                     conf.level = 1 - alfa)
+
+print(post_hoc)
+
+# Conclusión de prueba post hoc.
+# Con respecto a los resultados de la columna p_adj, se puede observar que para
+# cada uno de los valores p asociados a las diferencias de tratamientos, ninguno 
+# de estos tiene un p menor al nivel de significación (alfa = 0.025), por lo que 
+# ningún tratamiento tiene una diferencia significativa, lo cual afirma además 
+# la conclusión entregada al ser realizada la prueba ANOVA.
+

@@ -2,6 +2,9 @@
 # Inf. y Modelos Estadísticos
 # Arturo Cadenas (20.468.370-0)
 # Claudio Muñoz (20.003.395-7)
+# Bryan Salas (19.316.410-2)
+# Miguel Salinas ()
+
 
 library (tidyverse)
 library (ggpubr)

@@ -37,18 +37,39 @@ Instancia Optimo R R2 R3 G
 '2dc.2048' 21 12.6 15.7 16.9 18
 ")
 
+# Importación de datos
 datos <- read.table(textConnection(texto), header = TRUE)
 
 # Llevar dataframe a formato largo .
 datos <- datos %>% pivot_longer(c("Optimo", "R", "R2", "R3", "G"),
                                 names_to = "algoritmo", 
-                                values_to = "tiempo")
+                                values_to = "distancia")
 
 datos[["algoritmo"]] <- factor(datos[["algoritmo"]])
 
 
+
+# Formulación de Hipótesis.
+# H0: No existen diferencias significativas en la solución de los algoritmos, por lo que no hay
+#     algoritmos mejores que otros.
+# HA: Existen diferencias significativas en la solución los algoritmos, por lo que hay
+#     algoritmos mejores que otros.
+
+# Se verifican las condiciones para utilizar ANOVA:
+# - Se puede suponer que las muestras son obtenidas de manera aleatoria e independiente.
+# - La escala con la que se mide la distancia tiene las propiedades de una escala de intervalos iguales.
+# - Se utiliza la función de R ezANOVA() que incluye una prueba para verificar esta condición: 
+#   la prueba de esfericidad de Mauchly.
+# - Se puede suponer razonablemente que la población de origen sigue una distribución
+#   normal, la cual se puede observar por medio del gráfico Q-Q, se debe tener en cuenta
+#   que existen valores que pueden ser atípicos, además se tiene que las muestras 
+#   son relativamente pequeñas, por lo que se utiliza un nivel de significación 
+#   bastante más exigente igual a alfa = 0,01.
+# Nivel de significación.
+alfa <- 0.01
+
 # Comprobación de normalidad .
-g <- ggqqplot(datos , x = "tiempo", y = "algoritmo", color = "algoritmo")
+g <- ggqqplot(datos , x = "distancia", y = "algoritmo", color = "algoritmo")
 g <- g + facet_wrap(~ algoritmo )
 g <- g + rremove("x.ticks") + rremove("x.text")
 g <- g + rremove("y.ticks") + rremove("y.text")
@@ -58,7 +79,7 @@ print(g)
 # Procedimiento ANOVA con ezANOVA ().
 cat ("\n\nProcedimiento ANOVA usando ezANOVA\n\n")
 
-prueba2 <- ezANOVA(data = datos , dv = tiempo , within = algoritmo ,
+prueba2 <- ezANOVA(data = datos , dv = distancia , within = algoritmo ,
                    wid = Instancia , return_aov = TRUE )
 
 print ( summary ( prueba2$aov))
@@ -66,25 +87,47 @@ print ( summary ( prueba2$aov))
 cat("Resultado de la prueba de esfericidad de Mauchly :\n\n")
 print(prueba2[["Mauchly's Test for Sphericity"]])
 
+
+# El valor p obtenido en esta prueba es muy bajo (p = 1.060585e-22), de lo que 
+# se desprende que los datos del ejemplo no cumplen con la condición de esfericidad
+# por lo que se debe considerar la corrección de GGreenhouse-Geisser y no el valor
+# sin corregir entregado por la prueba anterior.
 cat("\n\nY factores de corrección para cuando no se cumple la\n")
 cat("condición de esfericidad:\n\n")
 print(prueba2$'Sphericity Corrections')
 
+
+# Conclusión de prueba ANOVA:
+# Con respecto al resultado obtenido y al obtener un p = 0.004817602, inferior al
+# nivel de significación, se rechaza la hipótesis nula a favor de la alternativa, por lo tanto,
+# se concluye con un 99% de confianza que existen diferencias significativas en los algoritmos, 
+# por lo que hay algoritmos mejores que otros.      
+
+
 # Gráfico del tamaño del efecto .
-g2 <- ezPlot(data = datos , dv = tiempo , wid = Instancia , within = algoritmo ,
-             y_lab = "Tiempo promedio de ejecución [ms]", x = algoritmo )
+g2 <- ezPlot(data = datos , dv = distancia , wid = Instancia , within = algoritmo ,
+             y_lab = "Distancia promedio", x = algoritmo )
 
 print(g2)
 
 
 # Procedimiento post-hoc HSD de Tukey.
-mixto <- lme(tiempo ~ algoritmo , data = datos , random = ~1|Instancia )
+mixto <- lme(distancia ~ algoritmo , data = datos , random = ~1|Instancia )
 medias <- emmeans(mixto , "algoritmo")
 tukey <- pairs ( medias , adjust = "tukey")
 
 cat("\n\nPrueba HSD de Tukey\n\n")
 print(tukey)
 
+# Conclusión de prueba post hoc.
+# Se utiliza esta prueba para buscar las diferencias significativas entre los
+# diferentes algoritmos.
+# Se concluye con un 99% de confianza que los pares de algoritmos 
+# G - R
+# Optimo - R
+# Optimo - R2
+# Optimo - R3
+# Tienen diferencias significativas en la solución del problema del vendedor viajero.
 
 # Pregunta 2
 # El siguiente es (un resumen de) la descripción de un famoso experimento:
@@ -120,4 +163,9 @@ words colors interfer
 16 16 36
 19 15 31
 ")
+
+# Importación de datos
 datos2 <- read.table(textConnection(texto), header = TRUE)
+
+# Conclusión de prueba ANOVA:
+# Conclusión de prueba post hoc.

@@ -1,5 +1,9 @@
 # EP-09
 # Inf. y Modelos Estadísticos
+# Arturo Cadenas (20.468.370-0)
+# Claudio Muñoz (20.003.395-7)
+# Bryan Salas (19.316.410-2)
+# Miguel Salinas ()
 
 # Librerías
 library ( tidyverse )
@@ -166,6 +170,40 @@ words colors interfer
 
 # Importación de datos
 datos2 <- read.table(textConnection(texto), header = TRUE)
+datos2[["instancia"]] <- factor(1:nrow(datos2))
+
+# Llevar dataframe a formato largo .
+datos2 <- datos2 %>% pivot_longer(c("words", "colors", "interfer"),
+                                names_to = "tareas", 
+                                values_to = "tiempo")
+
+datos2[["tareas"]] <- factor(datos2[["tareas"]])
+
+# Comprobación de normalidad .
+g <- ggqqplot(datos2 , x = "tiempo", y = "tareas", color = "tareas")
+g <- g + facet_wrap(~ tareas )
+g <- g + rremove("x.ticks") + rremove("x.text")
+g <- g + rremove("y.ticks") + rremove("y.text")
+g <- g + rremove("axis.title")
+print(g)
+
+alfa <- 0.05
+
+prueba2 <- ezANOVA(data = datos2 , dv = tiempo , within = tareas,
+                   wid = instancia , return_aov = TRUE )
+
+print ( summary ( prueba2$aov))
+
+cat("Resultado de la prueba de esfericidad de Mauchly :\n\n")
+print(prueba2[["Mauchly's Test for Sphericity"]])
+
 
 # Conclusión de prueba ANOVA:
+
+g2 <- ezPlot(data = datos2 , dv = tiempo , wid = instancia , within = tareas ,
+             y_lab = "tiempo promedio", x = tareas )
+
+print(g2)
+
 # Conclusión de prueba post hoc.
+

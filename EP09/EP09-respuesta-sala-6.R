@@ -62,7 +62,7 @@ datos[["algoritmo"]] <- factor(datos[["algoritmo"]])
 # Se verifican las condiciones para utilizar ANOVA:
 # - Se puede suponer que las muestras son obtenidas de manera aleatoria e independiente.
 # - La escala con la que se mide la distancia tiene las propiedades de una escala de intervalos iguales.
-# - Se utiliza la función de R ezANOVA() que incluye una prueba para verificar esta condición: 
+# - Se utiliza la función de R ezANOVA() que incluye una prueba para verificar la condición de: 
 #   la prueba de esfericidad de Mauchly.
 # - Se puede suponer razonablemente que la población de origen sigue una distribución
 #   normal, la cual se puede observar por medio del gráfico Q-Q, se debe tener en cuenta
@@ -94,7 +94,7 @@ print(prueba2[["Mauchly's Test for Sphericity"]])
 
 # El valor p obtenido en esta prueba es muy bajo (p = 1.060585e-22), de lo que 
 # se desprende que los datos del ejemplo no cumplen con la condición de esfericidad
-# por lo que se debe considerar la corrección de GGreenhouse-Geisser y no el valor
+# por lo que se debe considerar la corrección de GGreenhouse-Geisser (e < 0.75) y no el valor
 # sin corregir entregado por la prueba anterior.
 cat("\n\nY factores de corrección para cuando no se cumple la\n")
 cat("condición de esfericidad:\n\n")
@@ -179,6 +179,22 @@ datos2 <- datos2 %>% pivot_longer(c("words", "colors", "interfer"),
 
 datos2[["tareas"]] <- factor(datos2[["tareas"]])
 
+
+# Formulación de Hipótesis.
+# H0: No existen diferencias significativas en los tiempos entre tareas
+# HA: Existen diferencias significativas en los tiempos entre tareas
+
+# Se verifican las condiciones para utilizar ANOVA:
+# - Se puede suponer que las muestras son obtenidas de manera aleatoria e independiente.
+# - La escala con la que se mide el tiempo, tiene las propiedades de una escala de intervalos iguales.
+# - Se utiliza la función de R ezANOVA() que incluye una prueba para verificar la condición de: 
+#   la prueba de esfericidad de Mauchly.
+# - Se puede suponer razonablemente que la población de origen sigue una distribución
+#   normal, la cual se puede observar por medio del gráfico Q-Q.
+# Nivel de significación.
+alfa <- 0.05
+
+
 # Comprobación de normalidad .
 g <- ggqqplot(datos2 , x = "tiempo", y = "tareas", color = "tareas")
 g <- g + facet_wrap(~ tareas )
@@ -187,7 +203,6 @@ g <- g + rremove("y.ticks") + rremove("y.text")
 g <- g + rremove("axis.title")
 print(g)
 
-alfa <- 0.05
 
 prueba2 <- ezANOVA(data = datos2 , dv = tiempo , within = tareas,
                    wid = instancia , return_aov = TRUE )
@@ -197,13 +212,34 @@ print ( summary ( prueba2$aov))
 cat("Resultado de la prueba de esfericidad de Mauchly :\n\n")
 print(prueba2[["Mauchly's Test for Sphericity"]])
 
+# El valor p obtenido en esta prueba es mayor al nivel de significación (p = 0.1850452), de lo que 
+# se desprende que los datos del ejemplo cumplen con la condición de esfericidad
+# por lo que se debe considerar el valor, sin corregir, de la tabla entregada por ezANOVA().
+
 
 # Conclusión de prueba ANOVA:
+# Con respecto al resultado obtenido y al tener un p = 4.07e-13, inferior al
+# nivel de significación, se rechaza la hipótesis nula a favor de la alternativa, por lo tanto,
+# se concluye con un 95% de confianza que existen diferencias significativas en los tiempos de las tareas
 
 g2 <- ezPlot(data = datos2 , dv = tiempo , wid = instancia , within = tareas ,
              y_lab = "tiempo promedio", x = tareas )
 
 print(g2)
 
-# Conclusión de prueba post hoc.
 
+# Procedimiento post-hoc HSD de Tukey.
+mixto <- lme(tiempo ~ tareas , data = datos2 , random = ~1|instancia )
+medias <- emmeans(mixto , "tareas")
+tukey <- pairs ( medias , adjust = "tukey")
+
+cat("\n\nPrueba HSD de Tukey\n\n")
+print(tukey)
+
+# Conclusión de prueba post hoc.
+# Se utiliza esta prueba para buscar las diferencias significativas entre el
+# tiempo de las diferentes tareas
+# Se concluye con un 95% de confianza que los pares de tareas 
+# colors - interfer
+# interfer - words
+# Tienen diferencias significativas en el tiempo.

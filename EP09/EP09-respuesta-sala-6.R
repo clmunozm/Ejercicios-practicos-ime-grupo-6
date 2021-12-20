@@ -3,7 +3,7 @@
 # Arturo Cadenas (20.468.370-0)
 # Claudio Muñoz (20.003.395-7)
 # Bryan Salas (19.316.410-2)
-# Miguel Salinas ()
+# Miguel Salinas (20.215.515-4)
 
 # Librerías
 library ( tidyverse )
@@ -68,7 +68,7 @@ datos[["algoritmo"]] <- factor(datos[["algoritmo"]])
 #   normal, la cual se puede observar por medio del gráfico Q-Q, se debe tener en cuenta
 #   que existen valores que pueden ser atípicos, además se tiene que las muestras 
 #   son relativamente pequeñas, por lo que se utiliza un nivel de significación 
-#   bastante más exigente igual a alfa = 0,01.
+#   bastante más exigente, igual a alfa = 0,01.
 # Nivel de significación.
 alfa <- 0.01
 
@@ -123,7 +123,7 @@ tukey <- pairs ( medias , adjust = "tukey")
 cat("\n\nPrueba HSD de Tukey\n\n")
 print(tukey)
 
-# Conclusión de prueba post hoc.
+# Conclusión de prueba post-hoc.
 # Se utiliza esta prueba para buscar las diferencias significativas entre los
 # diferentes algoritmos.
 # Se concluye con un 99% de confianza que los pares de algoritmos 
@@ -236,7 +236,7 @@ tukey <- pairs ( medias , adjust = "tukey")
 cat("\n\nPrueba HSD de Tukey\n\n")
 print(tukey)
 
-# Conclusión de prueba post hoc.
+# Conclusión de prueba post-hoc.
 # Se utiliza esta prueba para buscar las diferencias significativas entre el
 # tiempo de las diferentes tareas
 # Se concluye con un 95% de confianza que los pares de tareas 

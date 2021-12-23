@@ -147,7 +147,7 @@ if( prueba$p.value < alfa){
 # Se utiliza esta prueba para buscar las diferencias significativas entre el
 # porcentaje.
 # Se concluye con un 95% de confianza que los pares de algoritmos 
-# C6 - C3
+# C7 - C3
 # Tienen diferencias significativas en el porcentaje de acierto alcanzado
 # en diferentes conjuntos de prueba.
 

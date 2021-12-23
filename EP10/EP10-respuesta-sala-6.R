@@ -30,15 +30,32 @@ texto <-("
 ")
 datos <- read.table(textConnection(texto), header = TRUE, na.strings = "--")
 
-
+# Hipótesis a contrastar:
+# H0: No hay diferencias en el porcentaje de acierto alcanzado por los dos 
+#   algoritmos de clasificación
+# HA: Sí hay diferencias en el porcentaje de acierto alcanzado por los dos 
+#   algoritmos de clasificación
 
 # Establecer nivel de significación.
 alfa <- 0.05
 
-# Suma de rangos de Wilcoxon
-# Hacer la prueba de Mann-Whitney .
+# Se utiliza la prueba de Suma de rangos de Wilcoxon puesto que se trabaja con dos
+# muestras independientes.
+# Se verifican el cumplimiento de las condiciones:
+# - Las observaciones de ambas muestras son independientes puesto que son extraídos
+# de artículos.
+# - La escala empleada es ordinal, puesto que se trata de porcentaje de acierto
+# alcanzado por los dos algoritmos.
+
+# Se realiza la prueba de Mann-Whitney .
 prueba <- wilcox.test (datos$C2, datos$C4, alternative = "two.sided", conf.level = 1 - alfa)
 print(prueba)
+
+# Conclusión de la prueba:
+# Con respecto al resultado obtenido y con un valor de p = 0.6947, este siendo
+# mayor al nivel de significación, por lo tanto, se falla al rechazar la hipótesis
+# nula, concluyendo con un 95% de confianza que no hay diferencias en el porcentaje 
+# de acierto alcanzado por los dos algoritmos de clasificación.
 
 
 # ------------------------------------------------------------------------------
@@ -80,6 +97,20 @@ texto <- ("
 ")
 datos <- read.table(textConnection(texto), header = TRUE)
 
+# Hipótesis a contrastar:
+# H0: No hay diferencias en el porcentaje de acierto alcanzado por los tres 
+#   algoritmos de clasificación
+# HA: Sí hay diferencias en el porcentaje de acierto alcanzado por los tres 
+#   algoritmos de clasificación
+
+# Se utiliza la prueba de Friedman puesto que se trabaja con tres muestras correlacionadas.
+# Por lo que se verifican el cumplimiento de las condiciones:
+# - La variable independiente es categórica y tiene tres niveles.
+# - La escala de la variable dependiente es ordinal, puesto que se trata del acierto 
+# alcanzado por tres algoritmos de clasificación en diferentes conjuntos de prueba.
+# - Se puede afirmar que los sujetos provienen de una muestra aleatoria e independiente
+# de la población.
+
 # Prueba de Friedman 
 n <- length(datos$C3)
 Acierto <- c(datos$C3, datos$C6, datos$C7)
@@ -92,11 +123,18 @@ Algoritmo <- factor(Algoritmo)
 datos <- data.frame(Sujeto, Acierto, Algoritmo)
 # Establecer nivel de significación
 alfa <- 0.05
+
 # Hacer la prueba de Friedman .
 prueba <- friedman.test(Acierto ~ Algoritmo|Sujeto, data = datos)
 print(prueba)
 
-# Efectuar procedimiento post -hoc de Holm si se encuentran diferencias
+# Conclusión de la prueba:
+# Con respecto al resultado obtenido y con un valor de p = 0.00633, este siendo
+# menor al nivel de significación, por lo tanto, se rechaza la hipótesis nula en
+# favor de la alternativa concluyendo con un 95% de confianza que hay diferencias 
+# en el porcentaje de acierto alcanzado por los dos algoritmos de clasificación.
+
+# Efectuar procedimiento post-hoc de Holm si se encuentran diferencias
 # significativas .
 if( prueba$p.value < alfa){
   post_hoc <- pairwise.wilcox.test(datos$Acierto,
@@ -104,7 +142,15 @@ if( prueba$p.value < alfa){
                                    p.adjust.method = "holm",
                                    paired = TRUE)
   print(post_hoc)
-  }
+}
+# Conclusión post-hoc de Holm
+# Se utiliza esta prueba para buscar las diferencias significativas entre el
+# porcentaje.
+# Se concluye con un 95% de confianza que los pares de algoritmos 
+# C6 - C3
+# Tienen diferencias significativas en el porcentaje de acierto alcanzado
+# en diferentes conjuntos de prueba.
+
 # ------------------------------------------------------------------------------
 #Pregunta 4
 # Proponga un ejemplo novedoso (no mencionado en clase ni que aparezca en las 

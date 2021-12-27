@@ -82,7 +82,7 @@ print(prueba)
 # Variables:
 # -Persona: (N√∫mero que representa a una persona)
 # -A√±o: Periodo de tiempo, antes y despu√©s (2020 - 2021)
-# -Tasa de interÈs de los crÈditos (%)
+# -Tasa de inter?s de los cr?ditos (%)
 
 # Para este caso es preferible utilizar una prueba de los rangos con signo de 
 # Wilcoxon debido a que existen valores at√≠picos, adem√°s de que el tama√±o de la
@@ -196,39 +196,39 @@ if( prueba$p.value < alfa){
 # ejemplo y las hip√≥tesis nula y alternativa a contrastar.
 
 #Enunciado: 
-#En los ˙ltimos aÒos se ha visto un incremento constante en la tasa de
-#interÈs de los crÈditos bancarios. Por esta razÛn se quiere realizar 
-#un estudio en relaciÛn con el alza de la tasa interÈs en los crÈditos 
-#de 4 bancos diferentes en el transcurso de los aÒos, donde se 
-#desea comparar el alza de interÈs que tuvo cada banco y verificar 
+#En los √∫ltimos a√±os se ha visto un incremento constante en la tasa de
+#inter√©s de los cr√©ditos bancarios. Por esta raz√≥n se quiere realizar 
+#un estudio en relaci√≥n con el alza de la tasa inter√©s en los cr√©ditos 
+#de 4 bancos diferentes en el transcurso de los a√±os, donde se 
+#desea comparar el alza de inter√©s que tuvo cada banco y verificar 
 #si existe alguna diferencia en el alza de alguno de ellos. Para esto 
-#se tomaron muestras en diferentes aÒos, donde se cumple que: 
+#se tomaron muestras en diferentes a√±os, donde se cumple que: 
 
-# - La variable independiente, que corresponde a la tasa de interÈs de cada 
-#   banco, tiene m·s de dos niveles ya que se muestrean m·s de dos aÒos en cada caso.
-# - La escala de la variable es ordinal, ya que esta se ordena seg˙n el aÒo en que se muestrea.
-# - Las observaciones son independientes entre sÌ.
+# - La variable independiente, que corresponde a la tasa de inter√©s de cada 
+#   banco, tiene m√°s de dos niveles ya que se muestrean m√°s de dos a√±os en cada caso.
+# - La escala de la variable es ordinal, ya que esta se ordena seg√∫n el a√±o en que se muestrea.
+# - Las observaciones son independientes entre s√≠.
 
 # Variables:
-# -Banco: (N˙mero que representa a un banco)
-# -AÒo: Periodo de tiempo desde 2015 a 2020
-# -Tasa de interÈs de los crÈditos (%)
+# -Banco: (N√∫mero que representa a un banco)
+# -A√±o: Periodo de tiempo desde 2015 a 2020
+# -Tasa de inter√©s de los cr√©ditos (%)
 
-#Las HipÛtesis a contrastar son:
-#HipÛtesis Nula
-#H0: En el transcurso de los aÒos, todos los bancos tuvieron alzas de 
-#    interÈs similares.
+#Las Hip√≥tesis a contrastar son:
+#Hip√≥tesis Nula
+#H0: En el transcurso de los a?os, todos los bancos tuvieron alzas de 
+#    inter√©rs similares.
 
-#HipÛtesis Alternativa
+#Hip√≥tesis Alternativa
 #H1: Al menos un banco tuvo un comportamiento diferente en el alza de 
-#    su tasa de interÈs.
+#    su tasa de inter√©s.
 
-#Como se tienen m·s de dos muestras y adem·s cada una de ellas es independiente 
+#Como se tienen m√°s de dos muestras y adem√°s cada una de ellas es independiente, 
 #para realizar el estudio deseado es necesario utilizar la prueba de Kruskal-Wallis.
 
 #Los datos de las muestras son los siguientes:
 
-# AÒo    Banco 1    Banco 2    Banco 3    Banco 4
+# A√±o    Banco 1    Banco 2    Banco 3    Banco 4
 # 2015        2%       1.5%       2.5%       1.7% 
 # 2016      2.2%       1.8%       2.5%         2%
 # 2017      2.3%         2%       2.6%       2.1%

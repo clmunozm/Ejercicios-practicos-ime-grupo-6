@@ -82,7 +82,7 @@ print(prueba)
 # Variables:
 # -Persona: (Número que representa a una persona)
 # -Año: Periodo de tiempo, antes y después (2020 - 2021)
-# -Tasa de inter?s de los cr?ditos (%)
+# -Tasa de interés de los créditos (%)
 
 # Para este caso es preferible utilizar una prueba de los rangos con signo de 
 # Wilcoxon debido a que existen valores atípicos, además de que el tamaño de la
@@ -216,8 +216,8 @@ if( prueba$p.value < alfa){
 
 #Las Hipótesis a contrastar son:
 #Hipótesis Nula
-#H0: En el transcurso de los a?os, todos los bancos tuvieron alzas de 
-#    interérs similares.
+#H0: En el transcurso de los años, todos los bancos tuvieron alzas de 
+#    interés similares.
 
 #Hipótesis Alternativa
 #H1: Al menos un banco tuvo un comportamiento diferente en el alza de 

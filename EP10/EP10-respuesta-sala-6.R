@@ -54,8 +54,9 @@ print(prueba)
 # Conclusión de la prueba:
 # Con respecto al resultado obtenido y con un valor de p = 0.6947, este siendo
 # mayor al nivel de significación, por lo tanto, se falla al rechazar la hipótesis
-# nula, concluyendo con un 95% de confianza que no hay diferencias en el porcentaje 
-# de acierto alcanzado por los dos algoritmos de clasificación.
+# nula, concluyendo así que no se puede rechazar que no hay diferencias en el porcentaje 
+# de acierto alcanzado por los dos algoritmos de clasificación, por lo que no se
+# puede asegurar que hay un algoritmo mejor que otro.
 
 
 # ------------------------------------------------------------------------------
@@ -67,6 +68,39 @@ print(prueba)
 # con la escala de la variable dependiente en estudio. Indiqué cuáles serían las
 # variables/niveles involucrados en su ejemplo y las hipótesis nula y 
 # alternativa a contrastar.
+
+# Una empresa de análisis económico desea comprobar si se percibe una diferencia 
+# en las tasas de interés (%) de los créditos hipotecarios que un banco entrega 
+# a las personas luego del transcurso de los años 2020 y 2021.
+
+# Hipótesis a contrastar:
+# H0: No existen diferencias significativas en las tasas de interés de los
+#     créditos en Chile entre 2020 y 2021.
+# HA: Existen diferencias significativas en las tasas de interés de los
+#     créditos en Chile entre 2020 y 2021.
+
+# Variables:
+# -Persona: (Número que representa a una persona)
+# -Año: Periodo de tiempo, antes y después (2020 - 2021)
+
+# Para este caso es preferible utilizar una prueba de los rangos con signo de 
+# Wilcoxon debido a que existen valores atípicos, además de que el tamaño de la
+# muestra es pequeño por lo que no se asegura normalidad.
+
+# Los resultados se muestran a continuación:
+#
+# Persona   2020    2021 
+# 1         2%      3%  
+# 2         1.5%    1.9%
+# 3         2%      2.1%
+# 4         3%      3.5%
+# 5         2.5%    4.5%
+# 6         1.5%    2%
+# 7         2.9%    3%
+# 8         2.5%    5.5%
+# 9         2.5%    3%
+# 10        3%      3.5%
+
 
 # ------------------------------------------------------------------------------
 # Pregunta 3

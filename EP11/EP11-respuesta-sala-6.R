@@ -326,22 +326,18 @@ print(intervalo_T_P)
 # Función para calcular la media de las diferencias para dos columnas de una
 # matriz de datos en formato ancho .
 media_diferencias <- function(datos , columna_1 , columna_2) {
-  media <- mean ( datos [[ columna_1]] - datos [[ columna_2]])
+  media <- mean(datos[[columna_1]] - datos[[ columna_2]])
   return ( media )
 }
 
 # Función para generar la distribuciones de la diferencia de medias a
 # partir de las permutaciones .
-distribucion_diferencias <- function ( permutaciones , columna_1, columna_2) {
-  R <- length ( permutaciones )
+distribucion_diferencias <- function ( permutaciones , columna_1, columna_2, n) {
+  R <- n
   distribucion <- c ()
   
   for ( i in 1: R ) {
-    datos <- as.data.frame (permutaciones [ i ])
-    
-    datos <- datos %> % pivot_wider(names_from = " Algoritmo " ,
-                                               values_from = " Tiempo " )
-    
+    datos <- permutaciones[i,]
     diferencia <- media_diferencias(datos, columna_1, columna_2)
     distribucion <- c(distribucion, diferencia )
   }
@@ -349,4 +345,23 @@ distribucion_diferencias <- function ( permutaciones , columna_1, columna_2) {
   return ( distribucion )
 }
 
+if (!require(tidyverse ) ) {
+  install.packages("tidyverse ", dependencies = TRUE )
+  require (tidyverse )
+}
 
+Instancia <- factor (1:n)
+datos_anchos <- data.frame(Instancia, Media = m_Media, Tecnico = m_Tecnico, Profesional = m_Profesional)
+
+datos_largos <- datos_anchos %>% pivot_longer(c("Media", "Tecnico" ,
+                                                              "Profesional"),
+                                                          names_to = "Educación" ,
+                                                          values_to = "Ingresos" )
+
+datos_largos[["Educación"]] <- factor(datos_largos[["Educación" ]])
+n<- nrow(datos_anchos)
+dif_Media_Tecnico <- distribucion_diferencias(datos_anchos, "Media", "Tecnico", n)
+dif_Media_Profesional <- distribucion_diferencias(datos_anchos, "Media" , "Profesional", n)
+dif_Tecnico_Profesional <- distribucion_diferencias(datos_anchos, "Tecnico", "Profesional", n)
+
+# Obtener valores p.

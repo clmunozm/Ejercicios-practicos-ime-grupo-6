@@ -168,6 +168,10 @@ region_metropo <- datos_casen %>% filter(region == "Región Metropolitana de San
 esc_region_metropo <- sample(region_metropo$esc, n)
 b <- as.numeric(esc_region_metropo)
 
+print(shapiro.test(a))
+print(shapiro.test(b))
+# Al no cumplirse la normalidad, es posible emplear la prueba de permutaciones
+
 R = 5999
 contrastar_hipotesis_permutaciones(a, b, repeticiones = R, 
                                    FUN = mean, 

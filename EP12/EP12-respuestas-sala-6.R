@@ -70,5 +70,58 @@ p <- ggscatter(datos_num, x = "Waist.Girth", y = "Weight", color = "blue", fill 
 p <- p + geom_smooth(method = lm, se = FALSE , colour = "red")
 print(p)
 
-# Crear gráficos para evaluar el modelo .
-plot(modelo)
+
+
+# 6. Usando herramientas para la exploración de modelos del entorno R, buscar entre dos y cinco predictores de
+# entre las variables seleccionadas al azar en el punto 3, para agregar al modelo de regresión lineal simple
+# obtenido en el paso 5.
+
+
+f <- as.formula(paste("Weight", paste(c("Waist.Girth", predictoras), collapse = "+"), sep = " ~ "))
+print(f)
+
+# Modelo con todas las variables predictoras del punto 3
+models.completo <- lm(f, data = datos_num)
+
+# Seleccion de predictores hacia adelante (forward)
+# Se toma como modelo de la izquierda al modelo simple del punto 5 (modelo) y como el modelo de la derecha, al models.completo
+# el cual incluye todas las variables predictoras del punto 3 junto con "Waist.Girth" usado en el modelo simple del punto 5
+models.forward = step(modelo, scope = list(lower = modelo, upper = models.completo), direction = "forward", trace = 1)
+
+# Modelo propuesto por el metodo Forward
+summary(models.forward)
+
+
+# Seleccion de predictores hacia atrás (backward)
+models.backward = step(models.completo, scope = list(lower = modelo, upper = models.completo), direction = "backward", trace = 1)
+
+# Modelo propuesto por el metodo backward
+summary(models.backward)
+
+# Observamos, que para ambos metodos, el modelo propuesto es el mismo, el cual incluye: "Waist.Girth", "Knee.Girth", "Height" y "Forearm.Girth"
+
+
+# 7. Evaluar los modelos y “arreglarlos” en caso de que tengan algún problema con las condiciones que deben
+# cumplir.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

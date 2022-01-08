@@ -41,7 +41,7 @@ set.seed(8370)
 # Como la semilla se trata de un numero par se filtra la tabla dejando solo mujeres
 tabla <- filter(datos, Gender == 0)
 
-#Se hace una copia de la tacle y se elimina la variable peso
+#Se hace una copia de la tabla y se elimina la variable peso
 aux <- tabla
 aux$Weight <-NULL
 #Se obtienen los nombres de las varaibles
@@ -139,7 +139,7 @@ print(varianzas.FG)
 #    R: Observando los resultados, podemos ver que se cumple la condicion
 
 vifs <- vif(models.forward)
-cat("\ nVerificar la multicolinealidad :\n")
+cat("\nVerificar la multicolinealidad :\n")
 cat("- VIFs :\n")
 print( vifs )
 
@@ -152,7 +152,7 @@ cat("- VIF medio :", mean (vifs), "\n")
 #    R: Obtenemos como resultado de la prueba: Chisquare = 3.25478, Df = 1, p = 0.071215, por lo que el supuesto de homocedasticidad se cumple.
 
 prueba.Ncv <- ncvTest(models.forward)
-print(prueba.Nncv)
+print(prueba.Ncv)
 
 # 6. Los residuos deben seguir una distribución cercana a la normal centrada en cero.
 #    R: Obtenemos como resultado de la prueba: p-value = 0.7716, por lo que podemos asumir que el supuesto se cumple.
@@ -180,15 +180,29 @@ corrplot(correlacion, method="number", type="upper")
 
 # 8. Evaluar el poder predictivo del modelo en datos no utilizados para construirlo (o utilizando validación cruzada).
 
+# Crear conjuntos de entrenamiento y prueba .
+set.seed(8370)
+n <- nrow(tabla)
+print(tabla)
+n_entrenamiento <- floor(0.7 * n)
+muestra <- sample.int(n = n, size = n_entrenamiento, replace = FALSE)
+entrenamiento <- tabla[muestra, ]
+prueba <- tabla[-muestra, ]
 
+# Ajustar modelo con el conjunto de entrenamiento.
+modelo <- lm(Weight ~ Height, data = entrenamiento)
+print(summary(modelo))
 
+# Calcular error cuadrado promedio para el conjunto de entrenamiento.
+mse_entrenamiento <- mean (modelo$residuals ** 2)
+cat("MSE para el conjunto de entrenamiento: ", mse_entrenamiento, "\n")
 
-
-
-
-
-
-
+# Hacer predicciones para el conjunto de prueba.
+predicciones <- predict(modelo, prueba)
+# Calcular error cuadrado promedio para el conjunto de prueba.
+error <- sapply(prueba[["Weight"]],as.double) - predicciones
+mse_prueba <- mean(error ** 2)
+cat("MSE para el conjunto de prueba: ", mse_prueba)
 
 
 

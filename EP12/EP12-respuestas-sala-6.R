@@ -18,6 +18,14 @@ if (!require(dplyr) ) {
   install.packages("dplyr", dependencies = TRUE )
   require (dplyr)
 }
+if (!require(car)){
+  install.packages("car", dependencies = TRUE )
+  require (car)
+}
+if (!require(corrplot)){
+  install.packages("corrplot", dependencies = TRUE )
+  require (corrplot)
+}
 
 # Se cargan de datos.
 datos <- read.csv2(file.choose(),header=TRUE, sep = "")
@@ -104,8 +112,73 @@ summary(models.backward)
 # Observamos, que para ambos metodos, el modelo propuesto es el mismo, el cual incluye: "Waist.Girth", "Knee.Girth", "Height" y "Forearm.Girth"
 
 
-# 7. Evaluar los modelos y “arreglarlos” en caso de que tengan algún problema con las condiciones que deben
-# cumplir.
+# 7. Evaluar los modelos y “arreglarlos” en caso de que tengan algún problema con las condiciones que deben cumplir.
+
+# Condiciones RLM
+
+# 1. Las variables predictoras deben ser cuantitativas o dicotómicas (de ahí la necesidad de variables indicadoras para manejar más de dos niveles).
+#    R: Las variables predictoras son todas numéricas a nivel de intervalo y ninguna de ellas corresponde a una constante.
+
+# 2. La variable de respuesta debe ser cuantitativa y continua, sin restricciones para su variabilidad.
+#    R: Las variables peso ("Weight") es cuantitativa y continua.
+
+# 3. Los predictores deben tener algún grado de variabilidad (su varianza no debe ser igual a cero). En otras palabras, no pueden ser constantes.
+#    R: Observando los resultados, ninguna varianza es igual a 0.
+
+varianzas.WG <- var(datos_num$Waist.Girth)
+varianzas.KG <- var(datos_num$Knee.Girth) 
+varianzas.Ht <- var(datos_num$Height)
+varianzas.FG <- var(datos_num$Forearm.Girth)
+
+print(varianzas.WG) 
+print(varianzas.KG)
+print(varianzas.Ht)
+print(varianzas.FG)
+
+# 4. No debe existir multicolinealidad. Esto significa que no deben existir relaciones lineales fuertes entre dos o más predictores (coeficientes de correlación altos).
+#    R: Observando los resultados, podemos ver que se cumple la condicion
+
+vifs <- vif(models.forward)
+cat("\ nVerificar la multicolinealidad :\n")
+cat("- VIFs :\n")
+print( vifs )
+
+cat("- Tolerancias :\n")
+print(1/vifs)
+
+cat("- VIF medio :", mean (vifs), "\n")
+
+# 5. Los residuos deben ser homocedásticos (con varianzas similares) para cada nivel de los predictores.
+#    R: Obtenemos como resultado de la prueba: Chisquare = 3.25478, Df = 1, p = 0.071215, por lo que el supuesto de homocedasticidad se cumple.
+
+prueba.Ncv <- ncvTest(models.forward)
+print(prueba.Nncv)
+
+# 6. Los residuos deben seguir una distribución cercana a la normal centrada en cero.
+#    R: Obtenemos como resultado de la prueba: p-value = 0.7716, por lo que podemos asumir que el supuesto se cumple.
+
+prueba.shapiro = shapiro.test(models.forward$residuals)
+print(prueba.shapiro)
+
+# 7. Los valores de la variable de respuesta son independientes entre sí.
+#    R: Obtenemos como resultado de la prueba: p = 0.988, por lo que podemos concluir que los residuos son, en efecto, independientes.
+
+prueba.durbin <- durbinWatsonTest(models.forward)
+print(prueba.durbin)
+
+
+# 8. Cada predictor se relaciona linealmente con la variable de respuesta.
+#    R: Como observamos en los resultados, el supuesto se cumple
+
+datos.PR <- select(datos_num, Waist.Girth, Knee.Girth, Height, Forearm.Girth, Weight)
+correlacion <- round(cor(datos.PR), 2)
+correlacion
+corrplot(correlacion, method="number", type="upper")
+
+################################################################################
+
+
+# 8. Evaluar el poder predictivo del modelo en datos no utilizados para construirlo (o utilizando validación cruzada).
 
 
 

@@ -51,17 +51,12 @@ predictoras<-sample(variables, size = 8)
 print(predictoras)
 
 
-
-
-
 # Se pasan los datos a tipo numérico
 datos_num <- as.data.frame(apply(tabla, 2, as.numeric))
 
-# Tabla de Correlación
-tabla_correlacion <- cor(x)
-
 # Predictor Elegido: Waist.Girth -> Grosor a la altura de la cintura en cm
-# Pues tiene la correlacion más alta, esta es de tipo directa.
+# Pues tiene una correlación alta, esta es de tipo directa, y además se suele 
+# usar para estimar la cantidad de grasa corporal lo que se relaciona con el peso de una persona.
 cor(datos_num$Waist.Girth, datos_num$Weight)
 
 # Muestra de 50 mujeres
@@ -89,6 +84,7 @@ plot(modelo)
 
 
 f <- as.formula(paste("Weight", paste(c("Waist.Girth", predictoras), collapse = "+"), sep = " ~ "))
+
 print(f)
 
 # Modelo con todas las variables predictoras del punto 3
@@ -161,7 +157,7 @@ prueba.shapiro = shapiro.test(models.forward$residuals)
 print(prueba.shapiro)
 
 # 7. Los valores de la variable de respuesta son independientes entre sí.
-#    R: Obtenemos como resultado de la prueba: p = 0.988, por lo que podemos concluir que los residuos son, en efecto, independientes.
+#    R: Obtenemos como resultado de la prueba: p = 0.986, por lo que podemos concluir que los residuos son, en efecto, independientes.
 
 prueba.durbin <- durbinWatsonTest(models.forward)
 print(prueba.durbin)
@@ -179,18 +175,18 @@ corrplot(correlacion, method="number", type="upper")
 
 
 # 8. Evaluar el poder predictivo del modelo en datos no utilizados para construirlo (o utilizando validación cruzada).
-
-# Crear conjuntos de entrenamiento y prueba .
 set.seed(8370)
-n <- nrow(tabla)
-print(tabla)
+# Crear conjuntos de entrenamiento y prueba .
+n <- nrow(datos_num)
 n_entrenamiento <- floor(0.7 * n)
 muestra <- sample.int(n = n, size = n_entrenamiento, replace = FALSE)
-entrenamiento <- tabla[muestra, ]
-prueba <- tabla[-muestra, ]
+entrenamiento <- datos_num[muestra, ]
+prueba <- datos_num[-muestra, ]
+
+#variables[, !(colnames(variables) %in% predictoras), drop = FALSE]
 
 # Ajustar modelo con el conjunto de entrenamiento.
-modelo <- lm(Weight ~ Height, data = entrenamiento)
+modelo <- lm(Weight ~ Waist.Girth, data = entrenamiento)
 print(summary(modelo))
 
 # Calcular error cuadrado promedio para el conjunto de entrenamiento.
@@ -204,8 +200,10 @@ error <- sapply(prueba[["Weight"]],as.double) - predicciones
 mse_prueba <- mean(error ** 2)
 cat("MSE para el conjunto de prueba: ", mse_prueba)
 
-
-
+# Hay una diferencia considerable entre los errores cuadráticos medios, por lo que 
+# se considera que con la semilla utilizada es imprudente decir que el modelo sea generalizable.
+# Sin embargo, esto puede deberse a la separación aleatoria de los datos, por lo que usando otra semilla
+# podría ser posible obtener un modelo que pueda ser generalizable.
 
 
 

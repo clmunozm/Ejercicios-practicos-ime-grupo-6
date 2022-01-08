@@ -70,6 +70,9 @@ p <- ggscatter(datos_num, x = "Waist.Girth", y = "Weight", color = "blue", fill 
 p <- p + geom_smooth(method = lm, se = FALSE , colour = "red")
 print(p)
 
+# Crear gráficos para evaluar el modelo .
+plot(modelo)
+
 
 
 # 6. Usando herramientas para la exploración de modelos del entorno R, buscar entre dos y cinco predictores de

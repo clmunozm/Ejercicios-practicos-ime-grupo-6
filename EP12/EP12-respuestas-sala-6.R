@@ -43,3 +43,32 @@ predictoras<-sample(variables, size = 8)
 print(predictoras)
 
 
+
+
+
+# Se pasan los datos a tipo numérico
+datos_num <- as.data.frame(apply(tabla, 2, as.numeric))
+
+# Tabla de Correlación
+tabla_correlacion <- cor(x)
+
+# Predictor Elegido: Waist.Girth -> Grosor a la altura de la cintura en cm
+# Pues tiene la correlacion más alta, esta es de tipo directa.
+cor(datos_num$Waist.Girth, datos_num$Weight)
+
+# Muestra de 50 mujeres
+datos_num <- datos_num[sample(nrow(datos_num), 50),]
+
+# Ajustar modelo con R.
+modelo <- lm(Weight ~ Waist.Girth, data = datos_num)
+print(summary(modelo))
+
+# Graficar el modelo.
+p <- ggscatter(datos_num, x = "Waist.Girth", y = "Weight", color = "blue", fill = "blue",
+               xlab = "Grosor a la altura de la cintura [cm]", ylab = "Peso [Kg]")
+
+p <- p + geom_smooth(method = lm, se = FALSE , colour = "red")
+print(p)
+
+# Crear gráficos para evaluar el modelo .
+plot(modelo)

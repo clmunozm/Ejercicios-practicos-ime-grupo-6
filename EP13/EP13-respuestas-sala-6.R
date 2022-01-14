@@ -120,6 +120,60 @@ print(matriz.modelo.completo)
 modelo.escalonado = step(modelo, scope = list(lower = modelo, upper = modelo.completo), direction = "both", trace = 0)
 
 
+
+
+#### Modelos usando gml
+
+# Separar conjuntos de entrenamiento y prueba .
+n <- nrow(datos_num)
+n_entrenamiento <- floor(0.8 * n)
+muestra <- sample.int( n = n, size = n_entrenamiento, replace = FALSE)
+
+entrenamiento <- datos_num[ muestra, ]
+prueba <- datos_num[ - muestra, ]
+
+# Ajustar modelo .
+simple_model <- glm(EN ~ Waist.Girth, family = binomial(link = "logit"), data = entrenamiento)
+print(summary(simple_model))
+
+complete_model <- glm(f, family = binomial(link = "logit"), data = entrenamiento)
+print(summary(complete_model))
+
+stepped_model = step(simple_model, scope = list(lower = simple_model, upper = complete_model), direction = "both", trace = 0)
+print(summary(stepped_model))
+
+# Obtenemos que el modelo propuesto añade los siguientes 6 predictores:
+# 
+# Height            -0.42537    0.06108  -6.964 3.30e-12 ***
+# Knee.Girth         0.78735    0.15616   5.042 4.61e-07 ***
+# Forearm.Girth      0.74060    0.17768   4.168 3.07e-05 ***
+# Biiliac.diameter   0.40354    0.13320   3.030 0.002448 ** 
+# Chest.depth        0.32791    0.15845   2.070 0.038497 *  
+# Wrists.diameter    0.69036    0.42171   1.637 0.101614
+
+# Como se nos pide añadir entre dos y cinco predictores, eliminaremos Wrists.diameter
+# pues es la variable menos significativa de todas.
+# 
+# Quedandonos el siguiente modelo
+
+predictoras.final <- c("Height", "Forearm.Girth", "Chest.depth", "Knee.Girth", "Biiliac.diameter")
+f.final <- as.formula(paste("EN", paste(c(predictor, predictoras.final), collapse = "+"), sep = " ~ "))
+print(f.final)
+
+modelo.final = train(f.final, data = datos_num, method = "glm",
+                     family = binomial(link = "logit"),
+                     trControl = trainControl(method = "cv", number = 5, savePredictions = TRUE)
+)
+print(summary(modelo.final))
+
+# Evaluar el modelo final
+cat("Evaluación del modelo final basada en validación cruzada :\n")
+matriz.modelo.final <- confusionMatrix(modelo.final$pred$pred, modelo.final$pred$obs)
+print(matriz.modelo.final)
+
+####
+
+
 # Evaluar los modelos y “arreglarlos” en caso de que tengan algún problema con las condiciones que deben
 # cumplir.
 
@@ -148,9 +202,13 @@ roc.modelo.completo <- roc(datos_num[["EN"]], as.numeric(modelo.completo$pred$pr
 plot(roc.modelo.completo)
 
 
+# Evaluar el modelo final
+cat("Evaluación del modelo final basada en validación cruzada :\n")
+matriz.modelo.final <- confusionMatrix(modelo.final$pred$pred, modelo.final$pred$obs)
+print(matriz.modelo.final)
 
-
-
+roc.modelo.final <- roc(datos_num[["EN"]], as.numeric(modelo.final$pred$pred))
+plot(roc.modelo.final)
 
 
 

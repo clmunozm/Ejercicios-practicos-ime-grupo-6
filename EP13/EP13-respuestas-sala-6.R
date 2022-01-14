@@ -35,6 +35,6 @@ end<-nrow(datos)
 valores_IMC <- as.data.frame(datos_num$Weight[1:end]/((datos_num$Height[1:end]/100)^2))
 colnames(valores_IMC) <- "IMC"
 datos <- cbind(datos, valores_IMC) #Se agrega el IMC a los datos
-# Se determina el estado nutricional (EN) y se agregan a los datos
-datos <- mutate(datos, EN=ifelse("IMC" >= 25,1,0))
 
+# Se determina el estado nutricional (EN) y se agregan a los datos
+datos <- mutate(datos, EN= as.integer(IMC >= 25))

@@ -117,7 +117,7 @@ matriz.modelo.completo <- confusionMatrix(modelo.completo$pred$pred, modelo.comp
 print(matriz.modelo.completo)
 
 # No soporta los modelos ajustados con Train...
-modelo.escalonado = step(modelo, scope = list(lower = modelo, upper = modelo.completo), direction = "both", trace = 0)
+# modelo.escalonado <- step(modelo, scope = list(lower = modelo, upper = modelo.completo), direction = "both", trace = 0)
 
 
 
@@ -139,7 +139,7 @@ print(summary(simple_model))
 complete_model <- glm(f, family = binomial(link = "logit"), data = entrenamiento)
 print(summary(complete_model))
 
-stepped_model = step(simple_model, scope = list(lower = simple_model, upper = complete_model), direction = "both", trace = 0)
+stepped_model <- step(simple_model, scope = list(lower = simple_model, upper = complete_model), direction = "both", trace = 0)
 print(summary(stepped_model))
 
 # Obtenemos que el modelo propuesto añade los siguientes 6 predictores:

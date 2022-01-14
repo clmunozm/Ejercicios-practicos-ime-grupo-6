@@ -39,7 +39,7 @@ if (!require(pROC)){
 # Se cargan de datos.
 datos <- read.csv2(file.choose(),header=TRUE)
 datos_num <- as.data.frame(apply(datos, 2, as.numeric))
-end<-nrow(datos)
+end <- nrow(datos)
 # Se calcula el IMC
 valores_IMC <- as.data.frame(datos_num$Weight[1:end]/((datos_num$Height[1:end]/100)^2))
 colnames(valores_IMC) <- "IMC"
@@ -66,7 +66,7 @@ predictoras <- c("Height",
 # justificando bien esta selección.
 
 correlacion <- round(cor(datos_num, datos_num$EN), 2)
-correlacion
+print(correlacion)
 
 # Obtenemos que las variables con mayor correlación con EN son:
 # EN = 1; IMC = 0.80; Waist.Girth = 0.67; Weight = 0.66; Hip.Girth = 0.65.
@@ -160,7 +160,7 @@ predictoras.final <- c("Height", "Forearm.Girth", "Chest.depth", "Knee.Girth", "
 f.final <- as.formula(paste("EN", paste(c(predictor, predictoras.final), collapse = "+"), sep = " ~ "))
 print(f.final)
 
-modelo.final = train(f.final, data = datos_num, method = "glm",
+modelo.final <- train(f.final, data = datos_num, method = "glm",
                      family = binomial(link = "logit"),
                      trControl = trainControl(method = "cv", number = 5, savePredictions = TRUE)
 )
